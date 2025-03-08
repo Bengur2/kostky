@@ -59,3 +59,5 @@ function sortPlayers(players) {
         const sumA = a.rolls.reduce((acc, val) => acc + val, 0);
         const sumB = b.rolls.reduce((acc, val) => acc + val, 0);
         return sumB - sumA;
+    });
+}
