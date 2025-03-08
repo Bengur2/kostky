@@ -1,13 +1,12 @@
 {
-    "name": "online-kostky",
+    "name": "kostky-backend",
     "version": "1.0.0",
-    "description": "Online kostky hra",
+    "description": "Backend pro Discord bota s kostkami",
     "main": "server.js",
     "scripts": {
       "start": "node server.js"
     },
     "dependencies": {
-      "express": "^4.17.1",
-      "socket.io": "^4.0.0"
+      "express": "^4.17.1"
     }
   }
