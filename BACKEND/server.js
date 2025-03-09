@@ -51,6 +51,10 @@ function sortPlayers(players) {
     });
 }
 
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 app.listen(port, () => {
     console.log(`Backend běží na portu ${port}`);
 });

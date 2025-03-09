@@ -64,7 +64,15 @@ async function processCommandQueue() {
     }
 
     try {
+        if (!await checkServerHealth()) {
+            console.error('Server není dostupný, příkaz nebude zpracován.');
+            command.channel.send('Server není dostupný, zkuste to později.');
+            isProcessing = false;
+            processCommandQueue();
+            return;
+        }
         await axios.post(`${backendUrl}/roll`, { playerName: command.playerName });
+        usersWhoRolled.add(command.playerName);
         await updateResults(command.channel);
         processedCommands.add(command.id);
         console.log('Příkaz zpracován, přidávám do zpracovaných:', command.id);
@@ -86,9 +94,14 @@ async function updateResults(channel) {
     try {
         const response = await axios.get(`${backendUrl}/results`);
         let resultsMessage = 'Výsledky:\n';
-        response.data.results.forEach(result => {
-            let rollsDisplay = result.rolls.length > 0 ? result.rolls.join(', ') : 'Ještě neházel';
-            resultsMessage += `${result.name}: ${rollsDisplay}\n`;
+
+        const filteredResults = response.data.results.filter(result => usersWhoRolled.has(result.name));
+
+        filteredResults.forEach(result => {
+            let rollsDisplay = result.rolls.length > 0 ? result.rolls.join(', ') : '';
+            if (rollsDisplay) {
+                resultsMessage += `${result.name}: ${rollsDisplay}\n`;
+            }
         });
 
         if (resultsMessageId) {
@@ -115,3 +128,15 @@ async function updateResults(channel) {
         channel.send('Nastala chyba při načítání výsledků.');
     }
 }
+
+async function checkServerHealth() {
+    try {
+        const response = await axios.get(`${backendUrl}/health`);
+        return response.data.status === 'ok';
+    } catch (error) {
+        console.error('Server není dostupný:', error);
+        return false;
+    }
+}
+
+client.login(process.env.DISCORD_TOKEN);
