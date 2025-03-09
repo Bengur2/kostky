@@ -30,14 +30,23 @@ client.on('messageCreate', async message => {
 
         usersWhoRolled.add(playerName); // Přidá uživatele do Setu
 
+        console.log('Před voláním axios.post'); // Přidáno logování
         try {
             const response = await axios.post(`${backendUrl}/roll`, { playerName });
             message.channel.send(response.data.message);
             updateResults(message.channel);
+
+            // Simulace hodů botů po hodu bengur3403
+            if (playerName === 'bengur3403') {
+                setTimeout(() => simulateBotRoll('Bot1', message.channel), 1000);
+                setTimeout(() => simulateBotRoll('Bot2', message.channel), 2000);
+            }
+
         } catch (error) {
             console.error('Chyba při hodu:', error);
             message.channel.send('Nastala chyba při hodu.');
         }
+        console.log('Po volání axios.post'); // Přidáno logování
     } else if (message.content.startsWith('!reset')) {
         usersWhoRolled.clear(); // Vymaže Set při resetu
         try {
@@ -53,6 +62,7 @@ client.on('messageCreate', async message => {
 
 async function updateResults(channel) {
     console.log('Volání updateResults'); // Přidáno logování
+    console.trace(); // Přidáno trasování
     try {
         const response = await axios.get(`${backendUrl}/results`);
         let resultsMessage = 'Výsledky:\n';
@@ -78,6 +88,17 @@ async function updateResults(channel) {
     } catch (error) {
         console.error('Chyba při načítání výsledků:', error);
         channel.send('Nastala chyba při načítání výsledků.');
+    }
+}
+
+async function simulateBotRoll(botName, channel) {
+    try {
+        const response = await axios.post(`${backendUrl}/roll`, { playerName: botName });
+        channel.send(response.data.message);
+        updateResults(channel);
+    } catch (error) {
+        console.error(`Chyba při hodu bota ${botName}:`, error);
+        channel.send(`Nastala chyba při hodu bota ${botName}.`);
     }
 }
 
