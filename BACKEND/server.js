@@ -7,6 +7,7 @@ app.use(express.json());
 const players = [];
 
 app.post('/roll', (req, res) => {
+    console.log('Volání /roll pro:', req.body.playerName); // Přidáno logování
     const { playerName } = req.body;
     let player = players.find(p => p.name === playerName);
     if (!player) {
