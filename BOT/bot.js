@@ -17,6 +17,7 @@ let isProcessing = false;
 
 client.on('ready', () => {
     console.log(`Přihlášen jako ${client.user.tag}!`);
+    simulateBotRolls(); // Spustíme simulaci botů po přihlášení
 });
 
 client.on('messageCreate', async message => {
@@ -113,6 +114,27 @@ async function updateResults(channel) {
     } catch (error) {
         console.error('Chyba při načítání výsledků:', error);
         channel.send('Nastala chyba při načítání výsledků.');
+    }
+}
+
+async function simulateBotRolls() {
+    const botNames = ['Bot1', 'Bot2', 'Bot3']; // Jména botů
+    const channel = client.channels.cache.get('ID_VAŠEHO_KANÁLU'); // Nahraďte ID kanálu
+
+    if (!channel) {
+        console.error('Kanál nenalezen.');
+        return;
+    }
+
+    for (const botName of botNames) {
+        try {
+            await axios.post(`${backendUrl}/roll`, { playerName: botName });
+            await updateResults(channel);
+            console.log(`${botName} hodil.`);
+        } catch (error) {
+            console.error(`Chyba při hodu ${botName}:`, error);
+        }
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Pauza 1 sekundu mezi hody
     }
 }
 
