@@ -74,8 +74,12 @@ async function updateResults(channel) {
         // Smaže předchozí zprávu s výsledky
         if (resultsMessageId) {
             try {
-                const oldMessage = await channel.messages.fetch(resultsMessageId);
-                await oldMessage.delete();
+                // Přidána kontrola existence zprávy
+                await channel.messages.fetch(resultsMessageId).then(async (oldMessage) => {
+                    await oldMessage.delete();
+                }).catch(() => {
+                    console.log('Zpráva s výsledky neexistuje, není co mazat.');
+                });
             } catch (error) {
                 console.error('Chyba při mazání zprávy:', error);
             }
@@ -98,8 +102,4 @@ async function simulateBotRoll(botName, channel) {
         updateResults(channel);
     } catch (error) {
         console.error(`Chyba při hodu bota ${botName}:`, error);
-        channel.send(`Nastala chyba při hodu bota ${botName}.`);
-    }
-}
-
-client.login(token);
+        channel.send(`Nastala
