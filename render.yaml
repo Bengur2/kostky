@@ -1,6 +1,6 @@
 services:
   - name: bot
-    type: web
+    type: worker
     env: node
     buildCommand: yarn install --frozen-lockfile # nebo npm ci
     startCommand: node bot.js
