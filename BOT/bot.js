@@ -7,7 +7,6 @@ const client = new Discord.Client({
         Discord.GatewayIntentBits.MessageContent
     ]
 });
-const token = process.env.DISCORD_BOT_TOKEN;
 const backendUrl = process.env.BACKEND_URL;
 
 let resultsMessageId = null;
@@ -117,4 +116,4 @@ async function updateResults(channel) {
     }
 }
 
-client.login(token);
+client.login(process.env.DISCORD_BOT_TOKEN);
