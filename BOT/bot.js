@@ -102,4 +102,8 @@ async function simulateBotRoll(botName, channel) {
         updateResults(channel);
     } catch (error) {
         console.error(`Chyba při hodu bota ${botName}:`, error);
-        channel.send(`Nastala
+        channel.send(`Nastala chyba při hodu bota ${botName}.`);
+    }
+}
+
+client.login(token);
