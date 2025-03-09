@@ -41,12 +41,15 @@ rollButton.addEventListener('click', () => {
 socket.on('updateResults', (players) => {
     resultsDiv.innerHTML = '';
     players.forEach(player => {
-        const rolls = player.rolls.length > 0 ? player.rolls.join(', ') : 'Ještě neházel';
+        let rolls = 'Ještě neházel';
+        if (player.rolls && player.rolls.length > 0) {
+            rolls = player.rolls.join(', ');
+        }
         resultsDiv.innerHTML += `<p>${player.name}: ${rolls}</p>`;
     });
 
     const currentPlayer = players.find(player => player.name === playerName);
-    if (currentPlayer && currentPlayer.rolls.length > 0) {
+    if (currentPlayer && currentPlayer.rolls && currentPlayer.rolls.length > 0) {
         dice.forEach((die, index) => {
             die.textContent = currentPlayer.rolls[index];
             die.classList.remove('rolling');
