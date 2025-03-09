@@ -1,6 +1,12 @@
 const Discord = require('discord.js');
 const axios = require('axios');
-const client = new Discord.Client({ intents: ["Guilds", "GuildMessages", "MessageContent"] });
+const client = new Discord.Client({
+    intents: [
+        Discord.GatewayIntentBits.Guilds,
+        Discord.GatewayIntentBits.GuildMessages,
+        Discord.GatewayIntentBits.MessageContent
+    ]
+});
 const token = process.env.DISCORD_BOT_TOKEN;
 const backendUrl = process.env.BACKEND_URL;
 
