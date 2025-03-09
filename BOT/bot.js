@@ -119,7 +119,7 @@ async function updateResults(channel) {
 
 async function simulateBotRolls() {
     const botNames = ['Bot1', 'Bot2', 'Bot3']; // Jména botů
-    const channel = client.channels.cache.get('ID_VAŠEHO_KANÁLU'); // Nahraďte ID kanálu
+    const channel = client.channels.cache.get('1327658634158674006'); // Nahraďte ID kanálu
 
     if (!channel) {
         console.error('Kanál nenalezen.');
