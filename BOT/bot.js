@@ -21,11 +21,17 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async message => {
-    console.log('Zpráva:', message.content, 'od:', message.author.username);
+    console.log('--- Nová zpráva ---');
+    console.log('ID zprávy:', message.id);
+    console.log('ID uživatele:', message.author.id);
+    console.log('Obsah zprávy:', message.content);
+    console.log('Časové razítko:', message.createdTimestamp);
 
     if (message.content.startsWith('!hodit')) {
         const commandId = `${message.author.id}-${message.id}`;
+        console.log('Přidávám příkaz do fronty:', commandId);
         commandQueue.push({ playerName: message.author.username, id: commandId, channel: message.channel });
+        console.log('Aktuální fronta příkazů:', commandQueue);
         processCommandQueue();
     } else if (message.content.startsWith('!reset')) {
         usersWhoRolled.clear();
@@ -41,10 +47,16 @@ client.on('messageCreate', async message => {
 });
 
 async function processCommandQueue() {
-    if (isProcessing || commandQueue.length === 0) return;
+    if (isProcessing || commandQueue.length === 0) {
+        console.log('Zpracování fronty: nic k zpracování nebo probíhá jiné zpracování.');
+        return;
+    }
     isProcessing = true;
 
     const command = commandQueue.shift();
+    console.log('Zpracovávám příkaz:', command.id);
+    console.log('Aktuální fronta příkazů po odebrání:', commandQueue);
+
     if (processedCommands.has(command.id)) {
         console.log(`Příkaz ${command.id} již byl zpracován, přeskočeno.`);
         isProcessing = false;
@@ -56,6 +68,8 @@ async function processCommandQueue() {
         await axios.post(`${backendUrl}/roll`, { playerName: command.playerName });
         await updateResults(command.channel);
         processedCommands.add(command.id);
+        console.log('Příkaz zpracován, přidávám do zpracovaných:', command.id);
+        console.log('Aktuální zpracované příkazy:', processedCommands);
     } catch (error) {
         console.error('Chyba při hodu:', error);
         command.channel.send('Nastala chyba při hodu.');
@@ -83,6 +97,7 @@ async function updateResults(channel) {
                 await channel.messages.fetch(resultsMessageId).then(async (oldMessage) => {
                     setTimeout(async () => {
                         await oldMessage.delete();
+                        console.log('Zpráva s výsledky smazána:', resultsMessageId);
                     }, 200);
                 }).catch(() => {
                     console.log('Zpráva s výsledky neexistuje, není co mazat.');
@@ -94,6 +109,7 @@ async function updateResults(channel) {
 
         const newMessage = await channel.send(resultsMessage);
         resultsMessageId = newMessage.id;
+        console.log('Nová zpráva s výsledky odeslána:', resultsMessageId);
 
     } catch (error) {
         console.error('Chyba při načítání výsledků:', error);
