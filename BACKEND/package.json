@@ -4,9 +4,12 @@
     "description": "Backend pro Discord bota s kostkami",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js"
+        "start": "node server.js"
     },
     "dependencies": {
-      "express": "^4.17.1"
+        "express": "^4.17.1"
+    },
+    "engines": {
+        "yarn": "^1.22.0"
     }
-  }
+}

@@ -1,0 +1,13 @@
+services:
+  - name: bot
+    type: web
+    env: node
+    buildCommand: yarn install --frozen-lockfile # nebo npm ci
+    startCommand: node bot.js
+    rootDir: bot
+  - name: backend
+    type: web
+    env: node
+    buildCommand: yarn install --frozen-lockfile # nebo npm ci
+    startCommand: node server.js
+    rootDir: backend
