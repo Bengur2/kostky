@@ -6,43 +6,39 @@ const server = http.createServer(app);
 const io = socketIo(server);
 app.use(express.static(__dirname));
 
-const players = []; // Pole pro ukládání hráčů
+const players = {};
 
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
-        players.push({ id: socket.id, name: name, roll: 0 });
-        io.emit('updateResults', players);
+        players[socket.id] = { name: name, rolls: [] };
+        io.emit('updateResults', Object.values(players));
     });
 
     socket.on('roll', () => {
-        const player = players.find(p => p.id === socket.id);
-        if (player) {
-            player.roll = Math.floor(Math.random() * 6) + 1;
-            io.emit('updateResults', players);
+        if (players[socket.id] && players[socket.id].rolls.length === 0) {
+            players[socket.id].rolls = [
+                Math.floor(Math.random() * 100) + 1,
+                Math.floor(Math.random() * 100) + 1
+            ];
+            io.emit('updateResults', Object.values(players));
         }
     });
 
     socket.on('reset', (name) => {
         if (name === "Master") {
-            players.forEach(player => {
-                player.roll = 0;
-            });
-            io.emit('updateResults', players);
+            Object.keys(players).forEach(id => players[id].rolls = []);
+            io.emit('updateResults', Object.values(players));
         }
     });
 
+    socket.on('restart', () => {
+        Object.keys(players).forEach(id => players[id].rolls = []);
+        io.emit('updateResults', Object.values(players));
+    });
+
     socket.on('disconnect', () => {
-        const index = players.findIndex(p => p.id === socket.id);
-        if (index !== -1) {
-            players.splice(index, 1);
-            io.emit('updateResults', players);
-        }
-        if (players.length === 0) {
-            players.forEach(player => {
-                player.roll = 0;
-            });
-            io.emit('updateResults', players);
-        }
+        delete players[socket.id];
+        io.emit('updateResults', Object.values(players));
     });
 });
 
