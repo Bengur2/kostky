@@ -53,8 +53,7 @@ async function processCommandQueue() {
     }
 
     try {
-        const response = await axios.post(`${backendUrl}/roll`, { playerName: command.playerName });
-        command.channel.send(response.data.message);
+        await axios.post(`${backendUrl}/roll`, { playerName: command.playerName });
         await updateResults(command.channel);
         processedCommands.add(command.id);
     } catch (error) {
@@ -82,10 +81,9 @@ async function updateResults(channel) {
         if (resultsMessageId) {
             try {
                 await channel.messages.fetch(resultsMessageId).then(async (oldMessage) => {
-                    // Přidání pauzy před mazáním zprávy
                     setTimeout(async () => {
                         await oldMessage.delete();
-                    }, 200); // 200 ms pauza (může být upravena)
+                    }, 200);
                 }).catch(() => {
                     console.log('Zpráva s výsledky neexistuje, není co mazat.');
                 });
