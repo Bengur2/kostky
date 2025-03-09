@@ -10,6 +10,8 @@ const client = new Discord.Client({
 const token = process.env.DISCORD_BOT_TOKEN;
 const backendUrl = process.env.BACKEND_URL;
 
+let resultsMessageId = null; // Proměnná pro uložení ID zprávy s výsledky
+
 client.on('ready', () => {
     console.log(`Přihlášen jako ${client.user.tag}!`);
 });
@@ -26,18 +28,13 @@ client.on('messageCreate', async message => {
             message.channel.send('Nastala chyba při hodu.');
         }
     } else if (message.content.startsWith('!reset')) {
-        const playerName = message.author.username;
-        if (playerName === 'Master') {
-            try {
-                const response = await axios.post(`${backendUrl}/reset`, { playerName });
-                message.channel.send(response.data.message);
-                updateResults(message.channel);
-            } catch (error) {
-                console.error('Chyba při resetu:', error);
-                message.channel.send('Nastala chyba při resetu.');
-            }
-        } else {
-            message.channel.send('Nemáš oprávnění resetovat hody.');
+        try {
+            const response = await axios.post(`${backendUrl}/reset`);
+            message.channel.send(response.data.message);
+            updateResults(message.channel);
+        } catch (error) {
+            console.error('Chyba při resetu:', error);
+            message.channel.send('Nastala chyba při resetu.');
         }
     }
 });
@@ -50,7 +47,23 @@ async function updateResults(channel) {
             let rollsDisplay = result.rolls.length > 0 ? result.rolls.join(', ') : 'Ještě neházel';
             resultsMessage += `${result.name}: ${rollsDisplay}\n`;
         });
-        channel.send(resultsMessage);
+
+        if (resultsMessageId) {
+            // Uprav existující zprávu
+            try {
+                const message = await channel.messages.fetch(resultsMessageId);
+                await message.edit(resultsMessage);
+            } catch (error) {
+                console.error('Chyba při úpravě zprávy:', error);
+                // Pokud zpráva neexistuje, pošli novou
+                const newMessage = await channel.send(resultsMessage);
+                resultsMessageId = newMessage.id;
+            }
+        } else {
+            // Pošli novou zprávu a ulož její ID
+            const newMessage = await channel.send(resultsMessage);
+            resultsMessageId = newMessage.id;
+        }
     } catch (error) {
         console.error('Chyba při načítání výsledků:', error);
         channel.send('Nastala chyba při načítání výsledků.');
