@@ -82,7 +82,10 @@ async function updateResults(channel) {
         if (resultsMessageId) {
             try {
                 await channel.messages.fetch(resultsMessageId).then(async (oldMessage) => {
-                    await oldMessage.delete();
+                    // Přidání pauzy před mazáním zprávy
+                    setTimeout(async () => {
+                        await oldMessage.delete();
+                    }, 200); // 200 ms pauza (může být upravena)
                 }).catch(() => {
                     console.log('Zpráva s výsledky neexistuje, není co mazat.');
                 });
