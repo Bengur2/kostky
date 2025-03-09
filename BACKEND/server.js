@@ -25,16 +25,11 @@ app.post('/roll', (req, res) => {
 });
 
 app.post('/reset', (req, res) => {
-    const { playerName } = req.body;
-    if (playerName === 'Master') {
-        players.forEach(player => {
-            player.rolls = [];
-            player.rollsCount = 0;
-        });
-        res.json({ message: 'Hody byly resetovány.' });
-    } else {
-        res.status(403).json({ message: 'Nemáš oprávnění resetovat hody.' });
-    }
+    players.forEach(player => {
+        player.rolls = [];
+        player.rollsCount = 0;
+    });
+    res.json({ message: 'Hody byly resetovány.' });
 });
 
 app.get('/results', (req, res) => {
