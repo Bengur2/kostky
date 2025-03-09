@@ -36,6 +36,9 @@ rollButton.addEventListener('click', () => {
     socket.emit('roll');
     rollButton.disabled = true;
     dice.forEach(die => die.classList.add('rolling'));
+    setTimeout(() => {
+        dice.forEach(die => die.classList.remove('rolling'));
+    }, 1000); // Odstranění třídy po skončení animace
 });
 
 socket.on('updateResults', (players) => {
@@ -52,7 +55,6 @@ socket.on('updateResults', (players) => {
     if (currentPlayer && currentPlayer.rolls && currentPlayer.rolls.length > 0) {
         dice.forEach((die, index) => {
             die.textContent = currentPlayer.rolls[index];
-            die.classList.remove('rolling');
         });
         rollButton.disabled = true;
     } else {
