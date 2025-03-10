@@ -128,7 +128,15 @@ function endAuction() {
 }
 
 function sendAuctionState() {
-    io.emit('auctionUpdate', auction);
+    // Odesíláme pouze potřebné části objektu auction
+    io.emit('auctionUpdate', {
+        running: auction.running,
+        item: auction.item,
+        highestBid: auction.highestBid,
+        highestBidder: auction.highestBidder,
+        timeLeft: auction.timeLeft,
+        biddingEnabled: auction.biddingEnabled
+    });
 }
 
 function sendLootState() {
