@@ -1,26 +1,57 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Press Start 2P', cursive; /* Retro pixel font */
+    background-color: #282828; /* Tmavě šedé pozadí */
+    color: #b8b8b8; /* Světle šedý text */
     text-align: center;
+    margin: 0;
+    padding: 20px;
+}
+h1 {
+    color: #ff9800; /* Oranžový nadpis */
+    text-shadow: 2px 2px 0 #000; /* Stín pro pixel art efekt */
+}
+#players, #game {
+    background-color: #3c3c3c; /* Tmavší šedá pro kontejnery */
+    padding: 20px;
+    border: 2px solid #555; /* Okraj pro pixel art efekt */
+    border-radius: 5px;
+    margin: 20px auto;
+    max-width: 600px;
+}
+input[type="text"], button {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #555;
+    color: #b8b8b8;
+    border: 1px solid #777;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 3px;
+}
+button:hover {
+    background-color: #666;
 }
 #dice {
     display: flex;
     justify-content: center;
     margin-top: 20px;
-    perspective: 800px; /* Přidána perspektiva pro 3D efekt */
+    perspective: 800px;
 }
 .die {
     width: 50px;
     height: 50px;
-    border: 1px solid black;
+    border: 2px solid #777;
     margin: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 20px;
-    transform-style: preserve-3d; /* Umožňuje 3D transformace */
+    transform-style: preserve-3d;
+    background-color: #444; /* Tmavě šedá pro kostky */
+    color: #fff; /* Bílý text pro kostky */
+    text-shadow: 1px 1px 0 #000;
 }
 .rolling {
-    animation: roll 1s cubic-bezier(0.25, 0.1, 0.25, 1) both; /* Upravena animace */
+    animation: roll 1s cubic-bezier(0.25, 0.1, 0.25, 1) both;
 }
 @keyframes roll {
     0% {

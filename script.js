@@ -3,7 +3,6 @@ const playerNameInput = document.getElementById('playerName');
 const joinButton = document.getElementById('joinButton');
 const gameDiv = document.getElementById('game');
 const rollButton = document.getElementById('rollButton');
-const resetButton = document.createElement('button');
 const restartButton = document.createElement('button');
 const resultsDiv = document.getElementById('results');
 const dice = document.querySelectorAll('.die');
@@ -16,19 +15,13 @@ joinButton.addEventListener('click', () => {
         document.getElementById('players').style.display = 'none';
         gameDiv.style.display = 'block';
 
-        if (playerName === "Master") {
-            resetButton.textContent = 'Resetovat hody';
-            resetButton.addEventListener('click', () => {
-                socket.emit('reset', playerName);
-            });
-            gameDiv.appendChild(resetButton);
-
-            restartButton.textContent = 'Restartovat hru';
-            restartButton.addEventListener('click', () => {
+        restartButton.textContent = 'Restartovat hru';
+        restartButton.addEventListener('click', () => {
+            if (confirm('Opravdu chcete restartovat hru?')) {
                 socket.emit('restart');
-            });
-            gameDiv.appendChild(restartButton);
-        }
+            }
+        });
+        gameDiv.appendChild(restartButton);
     }
 });
 
@@ -38,7 +31,7 @@ rollButton.addEventListener('click', () => {
     dice.forEach(die => die.classList.add('rolling'));
     setTimeout(() => {
         dice.forEach(die => die.classList.remove('rolling'));
-    }, 1000); // Odstranění třídy po skončení animace
+    }, 1000);
 });
 
 socket.on('updateResults', (players) => {
