@@ -9,6 +9,7 @@ let auctionRunning = false;
 let highestBid = 0;
 let highestBidder = '';
 let auctionTimer;
+let timeLeft = 10;
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -27,17 +28,21 @@ startAuctionButton.addEventListener('click', () => {
 });
 
 function startCountdown() {
-    let timeLeft = 10;
-    auctionInfoDiv.textContent = `Aukce probíhá, zbývá ${timeLeft} vteřin...`;
+    timeLeft = 10;
+    updateCountdown();
 
     auctionTimer = setInterval(() => {
         timeLeft--;
-        auctionInfoDiv.textContent = `Aukce probíhá, zbývá ${timeLeft} vteřin...`;
+        updateCountdown();
 
         if (timeLeft <= 0) {
             endAuction();
         }
     }, 1000);
+}
+
+function updateCountdown() {
+    auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}. Zbývá ${timeLeft} vteřin...`;
 }
 
 function endAuction() {
@@ -64,7 +69,7 @@ bidButtons.forEach(button => {
         if (bidAmount > highestBid) {
             highestBid = bidAmount;
             highestBidder = playerName; // Předpokládá se, že playerName je definováno v script.js
-            auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}`;
+            startCountdown(); // Reset timeru
         }
     });
 });
