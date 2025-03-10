@@ -7,11 +7,21 @@ const io = socketIo(server);
 app.use(express.static(__dirname));
 
 const players = {};
+let auction = {
+    running: false,
+    item: '',
+    highestBid: 0,
+    highestBidder: '',
+    timeLeft: 0,
+    biddingEnabled: false,
+    timer: null
+};
 
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
         players[socket.id] = { name: name, rolls: [] };
         sendSortedResults();
+        sendAuctionState();
     });
 
     socket.on('roll', () => {
@@ -29,6 +39,28 @@ io.on('connection', (socket) => {
             players[id].rolls = [];
         });
         sendSortedResults();
+    });
+
+    socket.on('startAuction', (item) => {
+        if (!auction.running) {
+            auction.running = true;
+            auction.item = item;
+            auction.highestBid = 0;
+            auction.highestBidder = '';
+            auction.timeLeft = 5;
+            sendAuctionState();
+            startAuctionCountdown();
+        }
+    });
+
+    socket.on('bid', (amount, playerName) => {
+        if (auction.running && auction.biddingEnabled) {
+            auction.highestBid += amount;
+            auction.highestBidder = playerName;
+            auction.timeLeft = 10;
+            sendAuctionState();
+            startAuctionCountdown();
+        }
     });
 
     socket.on('disconnect', () => {
@@ -49,6 +81,36 @@ function sendSortedResults() {
         }
     });
     io.emit('updateResults', sortedPlayers);
+}
+
+function startAuctionCountdown() {
+    if (auction.timer) {
+        clearInterval(auction.timer);
+    }
+    auction.timer = setInterval(() => {
+        auction.timeLeft--;
+        sendAuctionState();
+        if (auction.timeLeft <= 0) {
+            if (auction.biddingEnabled) {
+                auction.timeLeft = 10;
+                auction.biddingEnabled = false;
+                sendAuctionState();
+            } else {
+                endAuction();
+            }
+        }
+    }, 1000);
+}
+
+function endAuction() {
+    clearInterval(auction.timer);
+    auction.running = false;
+    auction.biddingEnabled = false;
+    sendAuctionState();
+}
+
+function sendAuctionState() {
+    io.emit('auctionUpdate', auction);
 }
 
 const port = process.env.PORT || 3000;

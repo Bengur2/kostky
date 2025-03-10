@@ -17,54 +17,8 @@ startAuctionButton.addEventListener('click', () => {
     const item = auctionItemInput.value;
     if (!item) return;
 
-    auctionRunning = true;
-    highestBid = 0;
-    highestBidder = '';
-    auctionInfoDiv.textContent = `Aukce na ${item} začíná za 5 vteřin...`;
-    bidButtonsDiv.style.display = 'none';
-    biddingEnabled = false;
-
-    setTimeout(() => {
-        startCountdown();
-    }, 5000);
+    socket.emit('startAuction', item);
 });
-
-function startCountdown() {
-    timeLeft = 10;
-    biddingEnabled = true;
-    bidButtonsDiv.style.display = 'block';
-    updateCountdown();
-
-    if (auctionTimer) {
-        clearInterval(auctionTimer); // Zastavení stávajícího timeru
-    }
-
-    auctionTimer = setInterval(() => {
-        timeLeft--;
-        updateCountdown();
-
-        if (timeLeft <= 0) {
-            endAuction();
-        }
-    }, 1000);
-}
-
-function updateCountdown() {
-    auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}. Zbývá ${timeLeft} vteřin...`;
-}
-
-function endAuction() {
-    clearInterval(auctionTimer);
-    auctionRunning = false;
-    biddingEnabled = false;
-    bidButtonsDiv.style.display = 'none';
-
-    if (highestBid > 0) {
-        auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
-    } else {
-        auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
-    }
-}
 
 bidButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -75,8 +29,26 @@ bidButtons.forEach(button => {
             return;
         }
 
-        highestBid += bidAmount; // Přičtení příhozu k aktuálnímu nejvyššímu příhozu
-        highestBidder = playerName; // Předpokládá se, že playerName je definováno v script.js
-        startCountdown(); // Reset timeru
+        socket.emit('bid', bidAmount, playerName);
     });
+});
+
+socket.on('auctionUpdate', (data) => {
+    auctionRunning = data.running;
+    highestBid = data.highestBid;
+    highestBidder = data.highestBidder;
+    timeLeft = data.timeLeft;
+    biddingEnabled = data.biddingEnabled;
+
+    if (auctionRunning) {
+        auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}. Zbývá ${timeLeft} vteřin...`;
+        bidButtonsDiv.style.display = biddingEnabled ? 'block' : 'none';
+    } else {
+        bidButtonsDiv.style.display = 'none';
+        if (highestBid > 0) {
+            auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
+        } else {
+            auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
+        }
+    }
 });
