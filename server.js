@@ -11,7 +11,7 @@ const players = {};
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
         players[socket.id] = { name: name, rolls: [] };
-        io.emit('updateResults', Object.values(players));
+        sendSortedResults();
     });
 
     socket.on('roll', () => {
@@ -20,20 +20,34 @@ io.on('connection', (socket) => {
                 Math.floor(Math.random() * 100) + 1,
                 Math.floor(Math.random() * 100) + 1
             ];
-            io.emit('updateResults', Object.values(players));
+            sendSortedResults();
         }
     });
 
     socket.on('restart', () => {
         Object.keys(players).forEach(id => players[id].rolls = []);
-        io.emit('updateResults', Object.values(players));
+        sendSortedResults();
     });
 
     socket.on('disconnect', () => {
         delete players[socket.id];
-        io.emit('updateResults', Object.values(players));
+        sendSortedResults();
     });
 });
+
+function sendSortedResults() {
+    const sortedPlayers = Object.values(players).sort((a, b) => {
+        if (b.rolls.length === 0 && a.rolls.length === 0) return 0;
+        if (b.rolls.length === 0) return -1;
+        if (a.rolls.length === 0) return 1;
+        if (b.rolls[0] !== a.rolls[0]) {
+            return b.rolls[0] - a.rolls[0];
+        } else {
+            return b.rolls[1] - a.rolls[1];
+        }
+    });
+    io.emit('updateResults', sortedPlayers);
+}
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
