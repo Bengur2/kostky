@@ -84,3 +84,8 @@ button:hover {
 .bidButton {
     margin: 5px;
 }
+
+.bidButton.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
