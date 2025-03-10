@@ -10,6 +10,7 @@ let highestBid = 0;
 let highestBidder = '';
 let auctionTimer;
 let timeLeft = 10;
+let biddingEnabled = false; // Nová proměnná
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -20,7 +21,8 @@ startAuctionButton.addEventListener('click', () => {
     highestBid = 0;
     highestBidder = '';
     auctionInfoDiv.textContent = `Aukce na ${item} začíná za 5 vteřin...`;
-    bidButtonsDiv.style.display = 'block';
+    bidButtonsDiv.style.display = 'none'; // Skryjeme tlačítka
+    biddingEnabled = false; // Zakážeme příhozy
 
     setTimeout(() => {
         startCountdown();
@@ -29,6 +31,8 @@ startAuctionButton.addEventListener('click', () => {
 
 function startCountdown() {
     timeLeft = 10;
+    biddingEnabled = true; // Povolíme příhozy
+    bidButtonsDiv.style.display = 'block'; // Zobrazíme tlačítka
     updateCountdown();
 
     auctionTimer = setInterval(() => {
@@ -48,6 +52,7 @@ function updateCountdown() {
 function endAuction() {
     clearInterval(auctionTimer);
     auctionRunning = false;
+    biddingEnabled = false; // Zakážeme příhozy
     bidButtonsDiv.style.display = 'none';
 
     if (highestBid > 0) {
@@ -59,7 +64,7 @@ function endAuction() {
 
 bidButtons.forEach(button => {
     button.addEventListener('click', () => {
-        if (!auctionRunning) return;
+        if (!auctionRunning || !biddingEnabled) return; // Kontrola biddingEnabled
         const bidAmount = parseInt(button.dataset.amount);
 
         if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
