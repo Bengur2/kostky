@@ -42,13 +42,14 @@ socket.on('auctionUpdate', (data) => {
         auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}. Zbývá ${timeLeft} vteřin...`;
         bidButtonsDiv.style.display = biddingEnabled ? 'block' : 'none';
         updateBidButtons();
+        auctionResultDiv.textContent = ''; // Vymazeme predchozi text
     } else {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
             auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
             auctionHistory.push({ item: data.item, winner: highestBidder, bid: highestBid });
             updateAuctionHistory();
-        } else {
+        } else if (data.timeLeft === 0) { // Zobrazime text pouze po skonceni samotne aukce
             auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
         }
     }

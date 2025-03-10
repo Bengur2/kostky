@@ -73,6 +73,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         delete players[socket.id];
         sendSortedResults();
+        if (Object.keys(players).length === 0) {
+            resetAuction(); // Reset aukce, pokud se odpojil poslední hráč
+        }
     });
 });
 
@@ -128,7 +131,6 @@ function endAuction() {
 }
 
 function sendAuctionState() {
-    // Odesíláme pouze potřebné části objektu auction
     io.emit('auctionUpdate', {
         running: auction.running,
         item: auction.item,
@@ -141,6 +143,19 @@ function sendAuctionState() {
 
 function sendLootState() {
     io.emit('lootUpdate', { lootAmount: 0, playerCount: 0, share: 0 });
+}
+
+function resetAuction() {
+    auction = {
+        running: false,
+        item: '',
+        highestBid: 0,
+        highestBidder: '',
+        timeLeft: 0,
+        biddingEnabled: false,
+        timer: null
+    };
+    sendAuctionState();
 }
 
 const port = process.env.PORT || 3000;
