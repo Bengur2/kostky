@@ -10,7 +10,7 @@ let highestBid = 0;
 let highestBidder = '';
 let auctionTimer;
 let timeLeft = 10;
-let biddingEnabled = false; // Nová proměnná
+let biddingEnabled = false;
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -21,8 +21,8 @@ startAuctionButton.addEventListener('click', () => {
     highestBid = 0;
     highestBidder = '';
     auctionInfoDiv.textContent = `Aukce na ${item} začíná za 5 vteřin...`;
-    bidButtonsDiv.style.display = 'none'; // Skryjeme tlačítka
-    biddingEnabled = false; // Zakážeme příhozy
+    bidButtonsDiv.style.display = 'none';
+    biddingEnabled = false;
 
     setTimeout(() => {
         startCountdown();
@@ -31,9 +31,13 @@ startAuctionButton.addEventListener('click', () => {
 
 function startCountdown() {
     timeLeft = 10;
-    biddingEnabled = true; // Povolíme příhozy
-    bidButtonsDiv.style.display = 'block'; // Zobrazíme tlačítka
+    biddingEnabled = true;
+    bidButtonsDiv.style.display = 'block';
     updateCountdown();
+
+    if (auctionTimer) {
+        clearInterval(auctionTimer); // Zastavení stávajícího timeru
+    }
 
     auctionTimer = setInterval(() => {
         timeLeft--;
@@ -52,7 +56,7 @@ function updateCountdown() {
 function endAuction() {
     clearInterval(auctionTimer);
     auctionRunning = false;
-    biddingEnabled = false; // Zakážeme příhozy
+    biddingEnabled = false;
     bidButtonsDiv.style.display = 'none';
 
     if (highestBid > 0) {
@@ -64,17 +68,15 @@ function endAuction() {
 
 bidButtons.forEach(button => {
     button.addEventListener('click', () => {
-        if (!auctionRunning || !biddingEnabled) return; // Kontrola biddingEnabled
+        if (!auctionRunning || !biddingEnabled) return;
         const bidAmount = parseInt(button.dataset.amount);
 
         if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
             return;
         }
 
-        if (bidAmount > highestBid) {
-            highestBid = bidAmount;
-            highestBidder = playerName; // Předpokládá se, že playerName je definováno v script.js
-            startCountdown(); // Reset timeru
-        }
+        highestBid += bidAmount; // Přičtení příhozu k aktuálnímu nejvyššímu příhozu
+        highestBidder = playerName; // Předpokládá se, že playerName je definováno v script.js
+        startCountdown(); // Reset timeru
     });
 });
