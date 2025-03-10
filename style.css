@@ -64,14 +64,3 @@ button:hover {
 #results {
     margin-top: 20px;
 }
-canvas {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-}
-#leftTorch {
-    left: 20px;
-}
-#rightTorch {
-    right: 20px;
-}
