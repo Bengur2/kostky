@@ -24,13 +24,6 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('reset', (name) => {
-        if (name === "Master") {
-            Object.keys(players).forEach(id => players[id].rolls = []);
-            io.emit('updateResults', Object.values(players));
-        }
-    });
-
     socket.on('restart', () => {
         Object.keys(players).forEach(id => players[id].rolls = []);
         io.emit('updateResults', Object.values(players));
