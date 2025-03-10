@@ -12,14 +12,17 @@
         <button id="joinButton">Připojit se</button>
     </div>
     <div id="game" style="display: none;">
+        <canvas id="leftTorch" width="50" height="100"></canvas>
         <button id="rollButton">Hodit kostkou</button>
         <div id="dice">
             <div class="die"></div>
             <div class="die"></div>
         </div>
         <div id="results"></div>
+        <canvas id="rightTorch" width="50" height="100"></canvas>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
+    <script src="torch.js"></script>
 </body>
 </html>
