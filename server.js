@@ -14,7 +14,8 @@ let auction = {
     highestBidder: '',
     timeLeft: 0,
     biddingEnabled: false,
-    timer: null
+    timer: null,
+    history: [] // Přidáno
 };
 
 io.on('connection', (socket) => {
@@ -74,7 +75,7 @@ io.on('connection', (socket) => {
         delete players[socket.id];
         sendSortedResults();
         if (Object.keys(players).length === 0) {
-            resetAuction(); // Reset aukce, pokud se odpojil poslední hráč
+            resetAuction();
         }
     });
 });
@@ -127,6 +128,9 @@ function endAuction() {
     clearInterval(auction.timer);
     auction.running = false;
     auction.biddingEnabled = false;
+    if (auction.highestBid > 0) {
+        auction.history.push({ item: auction.item, winner: auction.highestBidder, bid: auction.highestBid }); // Přidáno
+    }
     sendAuctionState();
 }
 
@@ -137,7 +141,8 @@ function sendAuctionState() {
         highestBid: auction.highestBid,
         highestBidder: auction.highestBidder,
         timeLeft: auction.timeLeft,
-        biddingEnabled: auction.biddingEnabled
+        biddingEnabled: auction.biddingEnabled,
+        history: auction.history // Přidáno
     });
 }
 
@@ -153,7 +158,8 @@ function resetAuction() {
         highestBidder: '',
         timeLeft: 0,
         biddingEnabled: false,
-        timer: null
+        timer: null,
+        history: [] // Přidáno
     };
     sendAuctionState();
 }

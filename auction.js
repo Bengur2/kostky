@@ -12,8 +12,8 @@ let highestBidder = '';
 let auctionTimer;
 let timeLeft = 10;
 let biddingEnabled = false;
-let auctionHistory = [];
-let lastAuctionHistory = JSON.stringify(auctionHistory);
+//let auctionHistory = []; // Odebráno
+//let lastAuctionHistory = JSON.stringify(auctionHistory); // Odebráno
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -48,11 +48,7 @@ socket.on('auctionUpdate', (data) => {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
             auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
-            auctionHistory.push({ item: data.item, winner: highestBidder, bid: highestBid });
-            if (JSON.stringify(auctionHistory) !== lastAuctionHistory) {
-                updateAuctionHistory();
-                lastAuctionHistory = JSON.stringify(auctionHistory);
-            }
+            updateAuctionHistory(data.history); // Upraveno
         } else if (data.timeLeft === 0 && data.item) {
             auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
         } else {
@@ -74,9 +70,9 @@ function updateBidButtons() {
     });
 }
 
-function updateAuctionHistory() {
+function updateAuctionHistory(history) {
     auctionHistoryDiv.innerHTML = '<h3>Historie aukcí:</h3>';
-    auctionHistory.forEach(item => {
+    history.forEach(item => {
         auctionHistoryDiv.innerHTML += `<p>${item.item}: ${item.winner} (${item.bid} zlata)</p>`;
     });
 }

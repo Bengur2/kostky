@@ -16,7 +16,7 @@ h1 {
     border: 2px solid #555;
     border-radius: 5px;
     margin: 20px auto;
-    max-width: 600px;
+    max-width: 1200px;
 }
 input[type="text"], button {
     font-family: 'Press Start 2P', cursive;
@@ -29,6 +29,16 @@ input[type="text"], button {
 }
 button:hover {
     background-color: #666;
+}
+#gameModules {
+    display: flex;
+    justify-content: space-between;
+}
+#diceModule, #auctionModule, #lootModule {
+    width: 30%;
+    border: 1px solid #555;
+    padding: 10px;
+    margin: 5px;
 }
 #dice {
     display: flex;
@@ -64,27 +74,9 @@ button:hover {
 #results {
     margin-top: 20px;
 }
-
-#lootDivision {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #555;
-}
-
-#lootDivision input {
-    margin: 5px;
-}
-
-#auction {
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #555;
-}
-
 .bidButton {
     margin: 5px;
 }
-
 .bidButton.disabled {
     opacity: 0.5;
     cursor: not-allowed;
