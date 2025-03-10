@@ -12,12 +12,13 @@ divideLootButton.addEventListener('click', () => {
         return;
     }
 
-    const totalShares = playerCount + 1; // Hráči + guildovní podíl
-    const sharePerPlayer = Math.floor(lootAmount / totalShares);
-    const guildShare = lootAmount - (sharePerPlayer * playerCount);
+    socket.emit('divideLoot', lootAmount, playerCount);
+});
 
-    lootResultsDiv.innerHTML = `
-        <p>Podíl na hráče: ${sharePerPlayer} zlata</p>
-        <p>Podíl pro guildu: ${guildShare} zlata</p>
-    `;
+socket.on('lootUpdate', (data) => {
+    if (data.share > 0) {
+        lootResultsDiv.innerHTML = `<p>Podíl na hráče a guildu: ${data.share} zlata</p>`;
+    } else {
+        lootResultsDiv.innerHTML = '';
+    }
 });

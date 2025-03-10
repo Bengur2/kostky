@@ -19,9 +19,10 @@ let auction = {
 
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
-        players[socket.id] = { name: name, rolls: [] };
+        players[socket.id] = { name: name, rolls: [], name: name }; // Přidáme jméno hráče do objektu
         sendSortedResults();
         sendAuctionState();
+        sendLootState();
     });
 
     socket.on('roll', () => {
@@ -49,7 +50,7 @@ io.on('connection', (socket) => {
             auction.highestBidder = '';
             auction.timeLeft = 5;
             sendAuctionState();
-            startAuctionStartCountdown(); // Změna: voláme funkci pro odpočet začátku aukce
+            startAuctionStartCountdown();
         }
     });
 
@@ -61,6 +62,13 @@ io.on('connection', (socket) => {
             sendAuctionState();
             startAuctionCountdown();
         }
+    });
+
+    socket.on('divideLoot', (lootAmount, playerCount) => {
+        const totalShares = playerCount + 1;
+        const sharePerPlayer = Math.floor(lootAmount / totalShares);
+        const guildShare = lootAmount - (sharePerPlayer * playerCount);
+        io.emit('lootUpdate', { lootAmount: lootAmount, playerCount: playerCount, share: sharePerPlayer });
     });
 
     socket.on('disconnect', () => {
@@ -83,7 +91,7 @@ function sendSortedResults() {
     io.emit('updateResults', sortedPlayers);
 }
 
-function startAuctionStartCountdown() { // Nová funkce pro odpočet začátku aukce
+function startAuctionStartCountdown() {
     if (auction.timer) {
         clearInterval(auction.timer);
     }
@@ -91,7 +99,7 @@ function startAuctionStartCountdown() { // Nová funkce pro odpočet začátku a
         auction.timeLeft--;
         sendAuctionState();
         if (auction.timeLeft <= 0) {
-            startAuctionCountdown(); // Voláme funkci pro odpočet samotné aukce
+            startAuctionCountdown();
         }
     }, 1000);
 }
@@ -101,7 +109,7 @@ function startAuctionCountdown() {
         clearInterval(auction.timer);
     }
     auction.timeLeft = 10;
-    auction.biddingEnabled = true; // Povolíme příhozy
+    auction.biddingEnabled = true;
     sendAuctionState();
 
     auction.timer = setInterval(() => {
@@ -122,6 +130,10 @@ function endAuction() {
 
 function sendAuctionState() {
     io.emit('auctionUpdate', auction);
+}
+
+function sendLootState() {
+    io.emit('lootUpdate', { lootAmount: 0, playerCount: 0, share: 0 }); // Poslat výchozí hodnoty
 }
 
 const port = process.env.PORT || 3000;
