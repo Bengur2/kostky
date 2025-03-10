@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
             auction.highestBidder = '';
             auction.timeLeft = 5;
             sendAuctionState();
-            startAuctionCountdown();
+            startAuctionStartCountdown(); // Změna: voláme funkci pro odpočet začátku aukce
         }
     });
 
@@ -83,7 +83,7 @@ function sendSortedResults() {
     io.emit('updateResults', sortedPlayers);
 }
 
-function startAuctionCountdown() {
+function startAuctionStartCountdown() { // Nová funkce pro odpočet začátku aukce
     if (auction.timer) {
         clearInterval(auction.timer);
     }
@@ -91,13 +91,24 @@ function startAuctionCountdown() {
         auction.timeLeft--;
         sendAuctionState();
         if (auction.timeLeft <= 0) {
-            if (auction.biddingEnabled) {
-                auction.timeLeft = 10;
-                auction.biddingEnabled = false;
-                sendAuctionState();
-            } else {
-                endAuction();
-            }
+            startAuctionCountdown(); // Voláme funkci pro odpočet samotné aukce
+        }
+    }, 1000);
+}
+
+function startAuctionCountdown() {
+    if (auction.timer) {
+        clearInterval(auction.timer);
+    }
+    auction.timeLeft = 10;
+    auction.biddingEnabled = true; // Povolíme příhozy
+    sendAuctionState();
+
+    auction.timer = setInterval(() => {
+        auction.timeLeft--;
+        sendAuctionState();
+        if (auction.timeLeft <= 0) {
+            endAuction();
         }
     }, 1000);
 }
