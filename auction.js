@@ -13,6 +13,7 @@ let auctionTimer;
 let timeLeft = 10;
 let biddingEnabled = false;
 let auctionHistory = [];
+let lastAuctionHistory = JSON.stringify(auctionHistory);
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -39,18 +40,23 @@ socket.on('auctionUpdate', (data) => {
     biddingEnabled = data.biddingEnabled;
 
     if (auctionRunning) {
-        auctionInfoDiv.textContent = `Nejvyšší příhoz: ${highestBid} zlata od ${highestBidder}. Zbývá ${timeLeft} vteřin...`;
+        auctionInfoDiv.innerHTML = `<p>Nejvyšší příhoz: ${highestBid} zlata</p><p>Od: ${highestBidder}</p><p>Zbývá ${timeLeft} vteřin...</p>`;
         bidButtonsDiv.style.display = biddingEnabled ? 'block' : 'none';
         updateBidButtons();
-        auctionResultDiv.textContent = ''; // Vymazeme predchozi text
+        auctionResultDiv.textContent = '';
     } else {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
             auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
             auctionHistory.push({ item: data.item, winner: highestBidder, bid: highestBid });
-            updateAuctionHistory();
-        } else if (data.timeLeft === 0) { // Zobrazime text pouze po skonceni samotne aukce
+            if (JSON.stringify(auctionHistory) !== lastAuctionHistory) {
+                updateAuctionHistory();
+                lastAuctionHistory = JSON.stringify(auctionHistory);
+            }
+        } else if (data.timeLeft === 0 && data.item) {
             auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
+        } else {
+            auctionResultDiv.textContent = '';
         }
     }
 });
