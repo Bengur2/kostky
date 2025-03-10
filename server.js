@@ -7,14 +7,6 @@ const io = socketIo(server);
 app.use(express.static(__dirname));
 
 const players = {};
-const bots = [
-    { name: 'Bot 1', rolls: [50, 20] },
-    { name: 'Bot 2', rolls: [50, 80] },
-    { name: 'Bot 3', rolls: [75, 30] },
-    { name: 'Bot 4', rolls: [75, 60] }
-];
-
-bots.forEach(bot => players[bot.name] = bot);
 
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
@@ -34,9 +26,7 @@ io.on('connection', (socket) => {
 
     socket.on('restart', () => {
         Object.keys(players).forEach(id => {
-            if (!bots.find(bot => bot.name === players[id].name)) {
-                players[id].rolls = [];
-            }
+            players[id].rolls = [];
         });
         sendSortedResults();
     });
