@@ -15,12 +15,12 @@ let auction = {
     timeLeft: 0,
     biddingEnabled: false,
     timer: null,
-    history: [] // Přidáno
+    history: []
 };
 
 io.on('connection', (socket) => {
-    socket.on('join', (name) => {
-        players[socket.id] = { name: name, rolls: [], name: name };
+    socket.on('join', (name, color) => {
+        players[socket.id] = { name: name, color: color, rolls: [] };
         sendSortedResults();
         sendAuctionState();
         sendLootState();
@@ -129,7 +129,7 @@ function endAuction() {
     auction.running = false;
     auction.biddingEnabled = false;
     if (auction.highestBid > 0) {
-        auction.history.push({ item: auction.item, winner: auction.highestBidder, bid: auction.highestBid }); // Přidáno
+        auction.history.push({ item: auction.item, winner: auction.highestBidder, bid: auction.highestBid });
     }
     sendAuctionState();
 }
@@ -142,7 +142,7 @@ function sendAuctionState() {
         highestBidder: auction.highestBidder,
         timeLeft: auction.timeLeft,
         biddingEnabled: auction.biddingEnabled,
-        history: auction.history // Přidáno
+        history: auction.history
     });
 }
 
@@ -159,7 +159,7 @@ function resetAuction() {
         timeLeft: 0,
         biddingEnabled: false,
         timer: null,
-        history: [] // Přidáno
+        history: []
     };
     sendAuctionState();
 }
