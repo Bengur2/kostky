@@ -81,3 +81,14 @@ button:hover {
     opacity: 0.5;
     cursor: not-allowed;
 }
+#lootInputs {
+    display: flex;
+    flex-direction: column;
+}
+#lootInputs input {
+    margin: 5px 0;
+}
+#lootModule button {
+    margin-left: 10px;
+    vertical-align: top;
+}
