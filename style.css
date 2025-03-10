@@ -1,5 +1,5 @@
 body {
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Roboto', sans-serif; /* Změna fontu */
     background-color: #282828;
     color: #b8b8b8;
     text-align: center;
@@ -19,7 +19,7 @@ h1 {
     max-width: 1200px;
 }
 input[type="text"], button {
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Roboto', sans-serif; /* Změna fontu */
     background-color: #555;
     color: #b8b8b8;
     border: 1px solid #777;

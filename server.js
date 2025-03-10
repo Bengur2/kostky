@@ -15,7 +15,8 @@ let auction = {
     timeLeft: 0,
     biddingEnabled: false,
     timer: null,
-    history: []
+    history: [],
+    lastBidder: null // Přidáno
 };
 
 io.on('connection', (socket) => {
@@ -50,6 +51,7 @@ io.on('connection', (socket) => {
             auction.highestBid = 0;
             auction.highestBidder = '';
             auction.timeLeft = 5;
+            auction.lastBidder = null; // Přidáno
             sendAuctionState();
             startAuctionStartCountdown();
         }
@@ -57,11 +59,14 @@ io.on('connection', (socket) => {
 
     socket.on('bid', (amount, playerName) => {
         if (auction.running && auction.biddingEnabled) {
-            auction.highestBid += amount;
-            auction.highestBidder = playerName;
-            auction.timeLeft = 10;
-            sendAuctionState();
-            startAuctionCountdown();
+            if (auction.lastBidder !== playerName) { // Přidáno
+                auction.highestBid += amount;
+                auction.highestBidder = playerName;
+                auction.timeLeft = 10;
+                auction.lastBidder = playerName; // Přidáno
+                sendAuctionState();
+                startAuctionCountdown();
+            }
         }
     });
 
@@ -142,7 +147,8 @@ function sendAuctionState() {
         highestBidder: auction.highestBidder,
         timeLeft: auction.timeLeft,
         biddingEnabled: auction.biddingEnabled,
-        history: auction.history
+        history: auction.history,
+        lastBidder: auction.lastBidder // Přidáno
     });
 }
 
@@ -159,7 +165,8 @@ function resetAuction() {
         timeLeft: 0,
         biddingEnabled: false,
         timer: null,
-        history: []
+        history: [],
+        lastBidder: null // Přidáno
     };
     sendAuctionState();
 }
