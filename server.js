@@ -19,7 +19,7 @@ let auction = {
 
 io.on('connection', (socket) => {
     socket.on('join', (name) => {
-        players[socket.id] = { name: name, rolls: [], name: name }; // Přidáme jméno hráče do objektu
+        players[socket.id] = { name: name, rolls: [], name: name };
         sendSortedResults();
         sendAuctionState();
         sendLootState();
@@ -67,7 +67,6 @@ io.on('connection', (socket) => {
     socket.on('divideLoot', (lootAmount, playerCount) => {
         const totalShares = playerCount + 1;
         const sharePerPlayer = Math.floor(lootAmount / totalShares);
-        const guildShare = lootAmount - (sharePerPlayer * playerCount);
         io.emit('lootUpdate', { lootAmount: lootAmount, playerCount: playerCount, share: sharePerPlayer });
     });
 
@@ -133,7 +132,7 @@ function sendAuctionState() {
 }
 
 function sendLootState() {
-    io.emit('lootUpdate', { lootAmount: 0, playerCount: 0, share: 0 }); // Poslat výchozí hodnoty
+    io.emit('lootUpdate', { lootAmount: 0, playerCount: 0, share: 0 });
 }
 
 const port = process.env.PORT || 3000;
