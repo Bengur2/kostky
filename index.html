@@ -18,8 +18,16 @@
             <div class="die"></div>
         </div>
         <div id="results"></div>
+        <div id="lootDivision">
+            <h2>Dělení kořisti</h2>
+            <input type="number" id="lootAmount" placeholder="Množství zlata">
+            <input type="number" id="playerCount" placeholder="Počet hráčů">
+            <button id="divideLoot">Rozdělit</button>
+            <div id="lootResults"></div>
+        </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
+    <script src="loot.js"></script>
 </body>
 </html>

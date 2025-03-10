@@ -64,3 +64,13 @@ button:hover {
 #results {
     margin-top: 20px;
 }
+
+#lootDivision {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #555;
+}
+
+#lootDivision input {
+    margin: 5px;
+}
