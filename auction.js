@@ -25,6 +25,7 @@ bidButtons.forEach(button => {
     button.addEventListener('click', () => {
         if (!auctionRunning || !biddingEnabled) return;
         const bidAmount = parseInt(button.dataset.amount);
+        console.log(`Příhoz ${bidAmount} od ${playerName}`); // Přidáno pro ladění
 
         socket.emit('bid', bidAmount, playerName);
     });

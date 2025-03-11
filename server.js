@@ -60,6 +60,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('bid', (amount, playerName) => {
+        console.log(`Příhoz ${amount} od ${playerName}`); // Přidáno pro ladění
         if (auction.running && auction.biddingEnabled) {
             if (auction.lastBidder !== playerName) {
                 auction.highestBid += amount;
