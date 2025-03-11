@@ -25,7 +25,6 @@ bidButtons.forEach(button => {
     button.addEventListener('click', () => {
         if (!auctionRunning || !biddingEnabled) return;
         const bidAmount = parseInt(button.dataset.amount);
-        console.log(`Příhoz ${bidAmount} od ${playerName}`); // Přidáno pro ladění
 
         socket.emit('bid', bidAmount, playerName);
     });
@@ -66,10 +65,10 @@ function updateBidButtons(lastBidder) {
         const bidAmount = parseInt(button.dataset.amount);
         if (lastBidder === playerName) {
             button.disabled = true;
-            button.classList.add('disabled');
+            button.classList.add('disabled'); // Přidáno pro vizuální deaktivaci
         } else {
             button.disabled = false;
-            button.classList.remove('disabled');
+            button.classList.remove('disabled'); // Přidáno pro vizuální aktivaci
         }
         if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
             button.disabled = true;
