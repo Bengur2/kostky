@@ -12,7 +12,7 @@ let auction = {
     item: '',
     highestBid: 0,
     highestBidder: '',
-    highestBidderColor: '#000000', // Přidáno
+    highestBidderColor: '#000000',
     timeLeft: 0,
     biddingEnabled: false,
     timer: null,
@@ -51,7 +51,7 @@ io.on('connection', (socket) => {
             auction.item = item;
             auction.highestBid = 0;
             auction.highestBidder = '';
-            auction.highestBidderColor = '#000000'; // Přidáno
+            auction.highestBidderColor = '#000000';
             auction.timeLeft = 5;
             auction.lastBidder = null;
             sendAuctionState();
@@ -64,7 +64,7 @@ io.on('connection', (socket) => {
             if (auction.lastBidder !== playerName) {
                 auction.highestBid += amount;
                 auction.highestBidder = playerName;
-                auction.highestBidderColor = players[socket.id].color; // Přidáno
+                auction.highestBidderColor = players[socket.id].color;
                 auction.timeLeft = 10;
                 auction.lastBidder = playerName;
                 sendAuctionState();
@@ -137,7 +137,7 @@ function endAuction() {
     auction.running = false;
     auction.biddingEnabled = false;
     if (auction.highestBid > 0) {
-        auction.history.push({ item: auction.item, winner: auction.highestBidder, winnerColor: auction.highestBidderColor, bid: auction.highestBid }); // Přidáno
+        auction.history.push({ item: auction.item, winner: auction.highestBidder, winnerColor: auction.highestBidderColor, bid: auction.highestBid });
     }
     sendAuctionState();
 }
@@ -148,7 +148,7 @@ function sendAuctionState() {
         item: auction.item,
         highestBid: auction.highestBid,
         highestBidder: auction.highestBidder,
-        highestBidderColor: auction.highestBidderColor, // Přidáno
+        highestBidderColor: auction.highestBidderColor,
         timeLeft: auction.timeLeft,
         biddingEnabled: auction.biddingEnabled,
         history: auction.history,
@@ -166,7 +166,7 @@ function resetAuction() {
         item: '',
         highestBid: 0,
         highestBidder: '',
-        highestBidderColor: '#000000', // Přidáno
+        highestBidderColor: '#000000',
         timeLeft: 0,
         biddingEnabled: false,
         timer: null,
