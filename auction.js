@@ -62,7 +62,6 @@ socket.on('auctionUpdate', (data) => {
 
 function updateBidButtons(lastBidder) {
     bidButtons.forEach(button => {
-        const bidAmount = parseInt(button.dataset.amount);
         if (lastBidder === playerName) {
             button.disabled = true;
             button.classList.add('disabled');
@@ -70,10 +69,10 @@ function updateBidButtons(lastBidder) {
             button.disabled = false;
             button.classList.remove('disabled');
         }
-        if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
+        if (highestBid >= 100000 && (parseInt(button.dataset.amount) === 1000 || parseInt(button.dataset.amount) === 5000)) {
             button.disabled = true;
             button.classList.add('disabled');
-        } else {
+        } else if (lastBidder !== playerName){
             button.disabled = false;
             button.classList.remove('disabled');
         }
