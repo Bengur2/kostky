@@ -37,6 +37,8 @@ socket.on('auctionUpdate', (data) => {
     timeLeft = data.timeLeft;
     biddingEnabled = data.biddingEnabled;
 
+    startAuctionButton.disabled = auctionRunning;
+
     if (auctionRunning) {
         auctionInfoDiv.innerHTML = `<p>NEJVYŠŠÍ PŘÍHOZ: ${formatNumber(highestBid)} ZLATA</p><p>OD: <span style="color: ${data.highestBidderColor}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${highestBidder}</span></p><p>ZBÝVÁ ${timeLeft} VTEŘIN...</p>`;
         bidButtonsDiv.style.display = biddingEnabled ? 'block' : 'none';
