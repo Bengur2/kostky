@@ -55,12 +55,12 @@ io.on('connection', (socket) => {
             auction.timeLeft = 5;
             auction.lastBidder = null;
             sendAuctionState();
-            startAuctionStartCountdown();
+            startAuctionCountdown();
         }
     });
 
     socket.on('bid', (amount, playerName) => {
-        console.log(`Příhoz ${amount} od ${playerName}`); // Přidáno pro ladění
+        console.log(`Příhoz ${amount} od ${playerName}`);
         if (auction.running && auction.biddingEnabled) {
             if (auction.lastBidder !== playerName) {
                 auction.highestBid += amount;
@@ -103,24 +103,10 @@ function sendSortedResults() {
     io.emit('updateResults', sortedPlayers);
 }
 
-function startAuctionStartCountdown() {
-    if (auction.timer) {
-        clearInterval(auction.timer);
-    }
-    auction.timer = setInterval(() => {
-        auction.timeLeft--;
-        sendAuctionState();
-        if (auction.timeLeft <= 0) {
-            startAuctionCountdown();
-        }
-    }, 1000);
-}
-
 function startAuctionCountdown() {
     if (auction.timer) {
         clearInterval(auction.timer);
     }
-    auction.timeLeft = 10;
     auction.biddingEnabled = true;
     sendAuctionState();
 
