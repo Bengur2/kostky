@@ -70,7 +70,7 @@ function updateBidButtons(lastBidder) {
             button.disabled = false;
             button.classList.remove('disabled');
         }
-        if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000 || bidAmount === 50000)) {
+        if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
             button.disabled = true;
             button.classList.add('disabled');
         } else {
