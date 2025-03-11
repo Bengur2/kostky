@@ -12,11 +12,12 @@ let auction = {
     item: '',
     highestBid: 0,
     highestBidder: '',
+    highestBidderColor: '#000000', // Přidáno
     timeLeft: 0,
     biddingEnabled: false,
     timer: null,
     history: [],
-    lastBidder: null // Přidáno
+    lastBidder: null
 };
 
 io.on('connection', (socket) => {
@@ -50,8 +51,9 @@ io.on('connection', (socket) => {
             auction.item = item;
             auction.highestBid = 0;
             auction.highestBidder = '';
+            auction.highestBidderColor = '#000000'; // Přidáno
             auction.timeLeft = 5;
-            auction.lastBidder = null; // Přidáno
+            auction.lastBidder = null;
             sendAuctionState();
             startAuctionStartCountdown();
         }
@@ -59,11 +61,12 @@ io.on('connection', (socket) => {
 
     socket.on('bid', (amount, playerName) => {
         if (auction.running && auction.biddingEnabled) {
-            if (auction.lastBidder !== playerName) { // Přidáno
+            if (auction.lastBidder !== playerName) {
                 auction.highestBid += amount;
                 auction.highestBidder = playerName;
+                auction.highestBidderColor = players[socket.id].color; // Přidáno
                 auction.timeLeft = 10;
-                auction.lastBidder = playerName; // Přidáno
+                auction.lastBidder = playerName;
                 sendAuctionState();
                 startAuctionCountdown();
             }
@@ -134,7 +137,7 @@ function endAuction() {
     auction.running = false;
     auction.biddingEnabled = false;
     if (auction.highestBid > 0) {
-        auction.history.push({ item: auction.item, winner: auction.highestBidder, bid: auction.highestBid });
+        auction.history.push({ item: auction.item, winner: auction.highestBidder, winnerColor: auction.highestBidderColor, bid: auction.highestBid }); // Přidáno
     }
     sendAuctionState();
 }
@@ -145,10 +148,11 @@ function sendAuctionState() {
         item: auction.item,
         highestBid: auction.highestBid,
         highestBidder: auction.highestBidder,
+        highestBidderColor: auction.highestBidderColor, // Přidáno
         timeLeft: auction.timeLeft,
         biddingEnabled: auction.biddingEnabled,
         history: auction.history,
-        lastBidder: auction.lastBidder // Přidáno
+        lastBidder: auction.lastBidder
     });
 }
 
@@ -162,11 +166,12 @@ function resetAuction() {
         item: '',
         highestBid: 0,
         highestBidder: '',
+        highestBidderColor: '#000000', // Přidáno
         timeLeft: 0,
         biddingEnabled: false,
         timer: null,
         history: [],
-        lastBidder: null // Přidáno
+        lastBidder: null
     };
     sendAuctionState();
 }

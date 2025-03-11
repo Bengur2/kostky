@@ -38,11 +38,11 @@ restartButton.addEventListener('click', () => {
 socket.on('updateResults', (players) => {
     resultsDiv.innerHTML = '';
     players.forEach(player => {
-        let rolls = 'Ještě neházel';
+        let rolls = 'JEŠTĚ NEHÁZEL';
         if (player.rolls && player.rolls.length > 0) {
             rolls = player.rolls.join(', ');
         }
-        resultsDiv.innerHTML += `<p style="color: ${player.color};">${player.name}: ${rolls}</p>`;
+        resultsDiv.innerHTML += `<p style="color: ${player.color}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">${player.name}: ${rolls}</p>`; // Přidáno text-shadow
     });
 
     const currentPlayer = players.find(player => player.name === playerName);
