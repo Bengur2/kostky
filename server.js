@@ -54,8 +54,9 @@ io.on('connection', (socket) => {
             auction.highestBidderColor = '#000000';
             auction.timeLeft = 5;
             auction.lastBidder = null;
+            auction.biddingEnabled = false;
             sendAuctionState();
-            startAuctionCountdown();
+            startAuctionStartCountdown();
         }
     });
 
@@ -103,10 +104,24 @@ function sendSortedResults() {
     io.emit('updateResults', sortedPlayers);
 }
 
+function startAuctionStartCountdown() {
+    if (auction.timer) {
+        clearInterval(auction.timer);
+    }
+    auction.timer = setInterval(() => {
+        auction.timeLeft--;
+        sendAuctionState();
+        if (auction.timeLeft <= 0) {
+            startAuctionCountdown();
+        }
+    }, 1000);
+}
+
 function startAuctionCountdown() {
     if (auction.timer) {
         clearInterval(auction.timer);
     }
+    auction.timeLeft = 10;
     auction.biddingEnabled = true;
     sendAuctionState();
 
