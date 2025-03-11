@@ -45,15 +45,15 @@ socket.on('auctionUpdate', (data) => {
     } else {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
-            auctionResultDiv.innerHTML = `<span style="color: ${data.highestBidderColor}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">AUKCI VYHRÁL ${highestBidder}</span> S PŘÍHOZEM ${formatNumber(highestBid)} ZLATA.`; // Opraveno
-            updateBidButtons(null); // Přidáno
+            auctionResultDiv.innerHTML = `<span style="color: ${data.highestBidderColor}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">AUKCI VYHRÁL ${highestBidder}</span> S PŘÍHOZEM ${formatNumber(highestBid)} ZLATA.`;
+            updateBidButtons(null);
             updateAuctionHistory(data.history);
         } else if (data.timeLeft === 0 && data.item) {
             auctionResultDiv.textContent = 'AUKCE SKONČILA BEZ PŘÍHOZŮ.';
-            updateBidButtons(null); // Přidáno
+            updateBidButtons(null);
         } else {
             auctionResultDiv.textContent = '';
-            updateBidButtons(null); // Přidáno
+            updateBidButtons(null);
         }
     }
 });
@@ -74,6 +74,10 @@ function updateBidButtons(lastBidder) {
         } else {
             button.disabled = false;
             button.classList.remove('disabled');
+        }
+        if (highestBid >= 100000 && bidAmount === 50000) {
+            button.disabled = true;
+            button.classList.add('disabled');
         }
     });
 }
