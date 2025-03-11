@@ -45,12 +45,15 @@ socket.on('auctionUpdate', (data) => {
     } else {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
-            auctionResultDiv.textContent = `<span style="color: ${data.highestBidderColor}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">AUKCI VYHRÁL ${highestBidder}</span> S PŘÍHOZEM ${formatNumber(highestBid)} ZLATA.`;
+            auctionResultDiv.innerHTML = `<span style="color: ${data.highestBidderColor}; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;">AUKCI VYHRÁL ${highestBidder}</span> S PŘÍHOZEM ${formatNumber(highestBid)} ZLATA.`; // Opraveno
+            updateBidButtons(null); // Přidáno
             updateAuctionHistory(data.history);
         } else if (data.timeLeft === 0 && data.item) {
             auctionResultDiv.textContent = 'AUKCE SKONČILA BEZ PŘÍHOZŮ.';
+            updateBidButtons(null); // Přidáno
         } else {
             auctionResultDiv.textContent = '';
+            updateBidButtons(null); // Přidáno
         }
     }
 });
@@ -68,6 +71,9 @@ function updateBidButtons(lastBidder) {
         if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
             button.disabled = true;
             button.classList.add('disabled');
+        } else {
+            button.disabled = false;
+            button.classList.remove('disabled');
         }
     });
 }
