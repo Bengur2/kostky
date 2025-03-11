@@ -8,7 +8,7 @@ divideLootButton.addEventListener('click', () => {
     const playerCount = parseInt(playerCountInput.value);
 
     if (isNaN(lootAmount) || isNaN(playerCount) || playerCount <= 0) {
-        lootResultsDiv.textContent = 'Zadejte platné hodnoty.';
+        lootResultsDiv.textContent = 'Zadejte platná čísla.';
         return;
     }
 
@@ -16,9 +16,15 @@ divideLootButton.addEventListener('click', () => {
 });
 
 socket.on('lootUpdate', (data) => {
-    if (data.share > 0) {
-        lootResultsDiv.innerHTML = `<p>Podíl na hráče a guildu: ${data.share} zlata</p>`;
-    } else {
-        lootResultsDiv.innerHTML = '';
-    }
+    const lootAmount = data.lootAmount;
+    const playerCount = data.playerCount;
+    const share = data.share;
+    const guildShare = Math.floor(share / 2); // Výpočet podílu pro 2 guildy
+
+    lootResultsDiv.innerHTML = `
+        <p>CELKOVÉ MNOŽSTVÍ: ${lootAmount} ZLATA</p>
+        <p>POČET HRÁČŮ: ${playerCount}</p>
+        <p>PODÍL NA HRÁČE A GUILDU: ${share} ZLATA</p>
+        <p>PODÍL PRO 2 GUILDY: ${guildShare} ZLATA</p>
+    `;
 });
