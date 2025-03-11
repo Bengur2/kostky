@@ -12,8 +12,6 @@ let highestBidder = '';
 let auctionTimer;
 let timeLeft = 10;
 let biddingEnabled = false;
-//let auctionHistory = []; // Odebráno
-//let lastAuctionHistory = JSON.stringify(auctionHistory); // Odebráno
 
 startAuctionButton.addEventListener('click', () => {
     if (auctionRunning) return;
@@ -40,17 +38,17 @@ socket.on('auctionUpdate', (data) => {
     biddingEnabled = data.biddingEnabled;
 
     if (auctionRunning) {
-        auctionInfoDiv.innerHTML = `<p>Nejvyšší příhoz: ${highestBid} zlata</p><p>Od: ${highestBidder}</p><p>Zbývá ${timeLeft} vteřin...</p>`;
+        auctionInfoDiv.innerHTML = `<p>NEJVYŠŠÍ PŘÍHOZ: ${highestBid} ZLATA</p><p>OD: ${highestBidder}</p><p>ZBÝVÁ ${timeLeft} VTEŘIN...</p>`;
         bidButtonsDiv.style.display = biddingEnabled ? 'block' : 'none';
-        updateBidButtons(data.lastBidder); // Přidáno
+        updateBidButtons(data.lastBidder);
         auctionResultDiv.textContent = '';
     } else {
         bidButtonsDiv.style.display = 'none';
         if (highestBid > 0) {
-            auctionResultDiv.textContent = `Aukci vyhrál ${highestBidder} s příhozem ${highestBid} zlata.`;
+            auctionResultDiv.textContent = `AUKCI VYHRÁL ${highestBidder} S PŘÍHOZEM ${highestBid} ZLATA.`;
             updateAuctionHistory(data.history);
         } else if (data.timeLeft === 0 && data.item) {
-            auctionResultDiv.textContent = 'Aukce skončila bez příhozů.';
+            auctionResultDiv.textContent = 'AUKCE SKONČILA BEZ PŘÍHOZŮ.';
         } else {
             auctionResultDiv.textContent = '';
         }
@@ -59,6 +57,7 @@ socket.on('auctionUpdate', (data) => {
 
 function updateBidButtons(lastBidder) {
     bidButtons.forEach(button => {
+        const bidAmount = parseInt(button.dataset.amount);
         if (lastBidder === playerName) {
             button.disabled = true;
             button.classList.add('disabled');
@@ -66,11 +65,15 @@ function updateBidButtons(lastBidder) {
             button.disabled = false;
             button.classList.remove('disabled');
         }
+        if (highestBid >= 100000 && (bidAmount === 1000 || bidAmount === 5000)) {
+            button.disabled = true;
+            button.classList.add('disabled');
+        }
     });
 }
 
 function updateAuctionHistory(history) {
-    auctionHistoryDiv.innerHTML = '<h3>Historie aukcí:</h3>';
+    auctionHistoryDiv.innerHTML = '<h3>HISTORIE AUKCÍ:</h3>';
     history.forEach(item => {
         auctionHistoryDiv.innerHTML += `<p>${item.item}: ${item.winner} (${item.bid} zlata)</p>`;
     });
