@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('divideLoot', (lootAmount, playerCount) => {
-        const totalShares = playerCount + 1;
+        const totalShares = playerCount;
         const sharePerPlayer = Math.floor(lootAmount / totalShares);
         io.emit('lootUpdate', { lootAmount: lootAmount, playerCount: playerCount, share: sharePerPlayer });
     });
