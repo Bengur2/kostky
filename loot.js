@@ -19,12 +19,10 @@ socket.on('lootUpdate', (data) => {
     const lootAmount = data.lootAmount;
     const playerCount = data.playerCount;
     const share = data.share;
-    const guildShare = Math.floor(share / 2); // Výpočet podílu pro 2 guildy
 
     lootResultsDiv.innerHTML = `
         <p>CELKOVÉ MNOŽSTVÍ: ${lootAmount} ZLATA</p>
         <p>POČET HRÁČŮ: ${playerCount}</p>
-        <p>PODÍL NA HRÁČE A GUILDU: ${share} ZLATA</p>
-        <p>PODÍL PRO 2 GUILDY: ${guildShare} ZLATA</p>
+        <p>PODÍL NA HRÁČE: ${share} ZLATA</p>
     `;
 });
